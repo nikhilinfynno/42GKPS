@@ -1,0 +1,29 @@
+{
+    "description": "A list of family member classifiers and their relationships (Brother-in-law - book page 14) - great-grand-son (page 130,120 )",
+    "familyRelations": [
+        "Self",
+        "Father",
+        "Mother",
+        "Uncle",
+        "Aunt",
+        "Son",
+        "Daughter",
+        "Grand Father",
+        "Grand Mother",
+        "Grand Son",
+        "Grand Daughter",
+        "Brother",
+        "Sister",
+        "Wife",
+        "Husband",
+        "Brother-in-law", 
+        "Daughter-in-law",
+        "Sister-in-law",
+        "Nephew",
+        "Niece",
+        "Great Grand Son",
+        "Great Grand Daughter",
+        "Grand Daughter-in-law",
+        "Great Grand Daughter-in-law"
+    ]
+}

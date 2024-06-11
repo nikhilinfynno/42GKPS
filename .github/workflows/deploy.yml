@@ -1,0 +1,25 @@
+on:
+  push:
+    branches:
+      - main
+
+name: Production Deploy
+
+jobs:
+  deploy:
+    name: Deploy
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Take a pull and run the commands
+        uses: appleboy/ssh-action@v0.1.5
+        with:
+          host: cyberpedia.infynno.com
+          username: "root"
+          key: ${{ secrets.SERVER_SSH_KEY }}
+          port: 22
+          script: |
+            cd /var/www/cyberpedia-backend
+            git pull origin main
+            composer install
+            php artisan optimize:clear

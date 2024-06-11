@@ -1,0 +1,39 @@
+{
+	"description": "Education degree list.",
+	"educations":
+	[
+		"Primary",
+		"Nursery",
+		"Secondary",
+		"Higher secondary science",
+		"Higher secondary commerce",
+		"Higher secondary arts",
+		"Higher secondary",
+		"B.A",
+		"Diploma",
+		"B.F.A",
+		"B.Ed",
+		"B.B.A",
+		"B.C.A",
+		"B.Sc.",
+		"B.E.",
+		"I.T.I",
+		"M.Ed",
+		"M.B.A",
+		"M.C.A",
+		"M.Sc.",
+		"M.E.",
+		"Graduate",
+		"Post graduate",
+		"Masters",
+		"Ph.D",
+		"B.Com",
+		"M.Com",
+		"Other",
+		"MBBS",
+		"B.Pharma",
+		"B.Arch",
+		"LLB"
+
+	]
+}
