@@ -25,6 +25,7 @@ class SearchService
         // Add pagination for API requests
         if ($isApi) {
             $perPage = $request->input('per_page', config('constant.PAGINATION.PER_PAGE'));
+            $perPage = 7;
             $paginatedQuery = $query->paginate($perPage);
             return $this->prepareApiResponse($paginatedQuery);
         } else {
@@ -34,6 +35,7 @@ class SearchService
     
     private function prepareDataTableResponse($query, $filters, $genders)
     {
+       
         return DataTables::of($query)
             ->addIndexColumn()
             ->editColumn('native_village', function ($data) {
@@ -54,8 +56,11 @@ class SearchService
             ->editColumn('occupation', function ($data) {
                 return $data->userDetail->occupation->name ?? '';
             })
+            ->editColumn('email', function ($user) {
+                return $user->email ?? '--';
+            })
             ->editColumn('phone', function ($user) {
-                return $user->phone_number;
+                return $user->phone_number ?? '--';
             })
             ->addColumn('action', function ($user) {
                 $btn = '<a href="' . route('hof.edit', ['user' => $user->crypt_id, 'member' => $user->member_code]) . '" class="btn btn-success btn-sm"
@@ -63,7 +68,7 @@ class SearchService
                 data-bs-placement="top" 
                 data-bs-original-title="Edit Hof / Family"
                 ><i class="bx bx-edit"></i> </a>
-                <a href="' . route('hof.show', ['user' => $user]) . '" 
+                <a href="' . route('hof.show', ['user' => $user->crypt_id]) . '" 
                 class="btn btn-info btn-sm"
                 data-bs-toggle="tooltip" 
                 data-bs-placement="top" 
@@ -75,7 +80,7 @@ class SearchService
                 return $user->full_name;
             })
             ->editColumn('created_at', function ($user) {
-                return CommonHelper::getDateByUserTimezone($user, $user->created_at);
+                return CommonHelper::getDateByTimezone($user->created_at);
             })
             ->addColumn('native_village', function ($user) {
                 return optional($user->userDetail)->native_village_id;

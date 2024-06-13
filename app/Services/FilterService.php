@@ -16,19 +16,19 @@ class FilterService
     public function hofFilters()
     {
         $filters['status'] = User::HOF_STATUS;
-        $filters['native_villages'] = NativeVillage::query()->activeStatus()->get();
+        $filters['native_villages'] = NativeVillage::query()->activeStatus()->orderBy('name', 'asc')->get();
         return $filters;
          
     }
     
     protected function commonFilters(){
         $data = [
-            'native_villages' => NativeVillage::query()->activeStatus()->get()->pluck('name', 'id')->toArray(),
+            'native_villages' => NativeVillage::query()->activeStatus()->orderBy('name', 'asc')->get()->pluck('name', 'id')->toArray(),
             'gender' => config('constant.GENDERS'),
             'marital_statuses' => config('constant.MARITAL_STATUS'),
             'blood_groups' => config('constant.BLOOD_GROUPS_SHORT'),
-            'educations' => Education::query()->activeStatus()->get()->pluck('title', 'id')->toArray(),
-            'occupations' => Occupation::query()->activeStatus()->get()->pluck('name', 'id')->toArray()
+            'educations' => Education::query()->activeStatus()->orderBy('title', 'asc')->get()->pluck('title', 'id')->toArray(),
+            'occupations' => Occupation::query()->activeStatus()->orderBy('name', 'asc')->get()->pluck('name', 'id')->toArray()
         ];
         return $data;
     }

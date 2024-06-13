@@ -58,7 +58,7 @@ return [
         '5'=> 'O+',   
         '6'=> 'O-',   
         '7'=> 'AB+',   
-        '8'=> 'AB-',   
+        '8'=> 'AB-',    
     ],
     'MARITAL_STATUS' => [
         '1'=>'Married',

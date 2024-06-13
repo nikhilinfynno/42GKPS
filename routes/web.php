@@ -55,7 +55,8 @@ Route::group(['middleware' => 'auth'], function () {
         Route::post('store', 'store')->name('hof.store');
         Route::post('{user}/member', 'store')->name('hof.add.member');
         Route::put('{user}/update', 'update')->name('hof.update');
-        Route::get('show/{user}', 'show')->name('hof.show');
+        Route::get('{user}/show', 'show')->name('hof.show');
+        Route::get('{user}/pdf', 'pdfDownload')->name('hof.pdf');
         Route::delete('delete/{user}', 'destroy')->name('hof.destroy');
     });
     Route::prefix('members')->controller(UserController::class)->group(function () {

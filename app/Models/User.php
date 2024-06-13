@@ -106,7 +106,7 @@ class User extends Authenticatable
     public function getAvatarUrlAttribute()
     {
         
-        if ($this->avatar) {
+        if ($this->avatar && file_exists(asset(self::IMAGE_PATH . $this->avatar))) {
             return asset(self::IMAGE_PATH . $this->avatar);
         }
         return 'https://via.placeholder.com/100x100.png/3F4196/ffffff?text=' . $this->initials; // Return null or a default image if no image is available
@@ -129,7 +129,7 @@ class User extends Authenticatable
         
     public function getBirthDateAttribute()
     {
-        return (isset($this->userDetail) && !empty($this->userDetail->dob)) ? CommonHelper::getDateByUserTimezone($this->userDetail->dob) : null;
+        return (isset($this->userDetail) && !empty($this->userDetail->dob)) ? CommonHelper::getDateByTimezone($this->userDetail->dob) : null;
     }
 
     public function getMemberAgeAttribute()
@@ -188,8 +188,6 @@ class User extends Authenticatable
         $lastInitial = substr($this->last_name, 0, 1);
         return $firstInitial . $lastInitial;
     }
-
-    
     
     public function members()
     {

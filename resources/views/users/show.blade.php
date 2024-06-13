@@ -19,175 +19,103 @@ User Detail
 
 
 <div class="row">
-	<div class="col-lg-3 master-board">
-		<div class="card">
-			<div class="card-body">
-				<div class="d-flex align-items-center">
-					<div class="avatar-sm flex-shrink-0">
-						<span class="avatar-title bg-light text-primary rounded-circle fs-3">
-							<i class="ri-wallet-3-fill align-middle"></i>
-						</span>
-					</div>
-					<div class="flex-grow-1 ms-3">
-						<p class="text-uppercase fw-semibold fs-12 text-muted mb-1"> Wallet Balance</p>
-						<h4 class=" mb-0">{{config('constant.DEFAULT_CURRENCY_SYMBOL')}}<span class="counter-value"
-								data-target="{{$user->wallet->balance ?? 0}}">{{$user->wallet->balance ?? 0}}</span></h4>
-					</div>
-		
-				</div>
-			</div><!-- end card body -->
-		</div>
-		<div class="card pricing-box ribbon-box right">
-			<div class="card-body p-4 m-2">
-				@if(isset($user->latestSubscription))
-					@if(isset($user->latestSubscription->is_active) &&$user->latestSubscription->is_active == 1)
-						<div class="ribbon-two ribbon-two-success"><span>Active</span></div>
-					@else
-						<div class="ribbon-two ribbon-two-danger"><span>Cancelled</span></div>
-					@endif
-					<div>
-						<div class="d-flex align-items-center">
-							<div class="flex-grow-1">
-								<h5 class="mb-1 fw-semibold">{{$user->latestSubscription->plan->name}}</h5>
-							</div>
-						</div>
+	@foreach ($familyMembers as $member)
+		<div class="col-lg-12 master-board">
 			
-						<div class="pt-4">
-							<h2><sup><small>{{config('constant.DEFAULT_CURRENCY_SYMBOL')}}</small></sup> {{$user->latestSubscription->plan->price}}<span class="fs-13 text-muted">/{{$user->latestSubscription->plan->frequency}} Days</span></h2>
-						</div>
-					</div>
-					<hr class="my-4 text-muted">
+			<div class="card ribbon-box left">
+				@if($member['is_hof'])
+					{{-- <div class="ribbon-two ribbon-two-primary"><span>HOF</span></div> --}}
+					<div class="ribbon ribbon-danger ribbon-shape mt-2"><span>HOF</span></div>
+				@endif
+				<div class="card-header align-items-center d-flex">
+					<h4 class="card-title mb-0 flex-grow-1" style="{{($member['is_hof']) ? 'margin-left:60px;' : '' }}">{{$member['full_name']}} <span
+						class="badge {{($member['is_hof']) ? 'badge-gradient-primary' : 'badge-gradient-success' }} ">{{$member['relation']}}</span></h4>
 					<div>
-						<ul class="list-unstyled vstack gap-3 text-muted">
-							<li>
-								<div class="d-flex">
-									<div class="flex-shrink-0 text-success me-1">
-										<i class="ri-checkbox-circle-fill fs-15 align-middle"></i>
+						<button type="button" class="btn btn-soft-secondary btn-sm material-shadow-none" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Edit Member">
+							<i class=" bx bx-edit"></i>
+						</button>
+						<a href="{{route('hof.pdf', ['user' => encrypt($member['id'])])}}" class="btn btn-soft-primary btn-sm material-shadow-none" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Download PDF">
+							<i class="bx bx-download"></i>
+						</a>
+						<a href="#" class="btn btn-soft-danger btn-sm material-shadow-none" data-bs-toggle="tooltip" data-bs-placement="top" data-bs-original-title="Delete Member">
+							<i class="bx bx-trash"></i>
+						</a>
+					</div>
+				</div>
+				<div class="card-body">
+					<div class="row">
+						<div class="col-lg-2">
+							<div class="avatar-lg">
+								<img src="{{$member['avatar_url']}}" alt="user-img" class="img-thumbnail rounded-circle">
+							</div>
+							 
+						</div>
+						<div class="col-lg-10">
+							<div class="row mb-4 sm-mt-4">
+								<div class="col-lg-4">
+									<div class="hstack -50 gap-1 mb-1">
+										<strong>Member Code</strong>: {{$member['member_code']}}
 									</div>
-									<div class="flex-grow-1">
-										Upto <b>{{$user->latestSubscription->plan->number_of_posts}}</b> Post <strong>{{
-										\App\Models\Plan::TYPE[$user->latestSubscription->plan->type]}}</strong>
+									<div class="hstack -50 gap-1 mb-1">
+										<strong>Family Code</strong>: {{$member['family_code']}}
+									</div>
+									<div class="hstack -50 gap-1 mb-1">
+										<strong>Phone</strong>: {{$member['phone'] ?? '--'}}
+									</div>
+									<div class="hstack -50 gap-1 mb-1">
+										<strong>Email</strong>: {{$member['email'] ?? '--'}}
+									</div>
+									<div class="hstack -50 gap-1 mb-1">
+										<strong>Date of Birth</strong>: {{$member['dob']}}
 									</div>
 								</div>
-							</li>
-						</ul>
-					</div>
-				@else
-					<div class="ribbon-two ribbon-two-primary"><span>Free</span></div>
-					<div>
-						<p class="text-muted mb-0 text-center">No Plan Subscribed</p>
-					</div>
-				@endif
-			</div>
-		</div>
-		<div class="card">
-			<div class="card-body border-bottom-dashed border-bottom">
-				<div class="row">
-					<div class="col-lg-12 col-sm-12">
-						<h6 class="card-title mb-0 flex-grow-1">User Detail</h6>
-					</div>
-				</div>
-			</div>
-			<div class="card-body">
-				 <div class="mb-3">
-					<label for="firstnameInput" class="form-label">First Name</label>
-					<input  type="text" class="form-control" placeholder="Enter your First Name" value="{{$user->first_name}}" readonly>
-				</div>
-				<div class="mb-3">
-					<label for="firstnameInput" class="form-label">Last Name</label>
-					<input  type="text" class="form-control" placeholder="Enter your Last Name" value="{{$user->last_name}}" readonly>
-				</div>
-				<div class="mb-3">
-					<label for="firstnameInput" class="form-label">Phone Number</label>
-					<div class="input-group">
-						<div class="input-group-text">{{$user->country_code ?? '+1'}}</div>
-						<input type="text" class="form-control" id="inlineFormInputGroupUsername" placeholder="Username" readonly value="{{$user->phone ?? '--'}}">
-					</div>
-				</div>
-				<div class="mb-3">
-					<label for="firstnameInput" class="form-label">Email</label>
-					<input type="text" class="form-control" placeholder="Enter your Last Name" value="{{$user->email}}" readonly>
-				</div>
-			</div>
-		</div>
-		
-	</div>
-	<div class="col-lg-9 master-board">
-		<div class="card">
-			<div class="card-body border-bottom-dashed border-bottom">
-				<div class="row">
-					<div class="col-lg-12 col-sm-12">
-						<h6 class="card-title mb-0 flex-grow-1">User Subscriptions</h6>
-					</div>
-				</div>
-			</div>
-			<div class="card-body">
-				<div class="row justify-content-end">
-					<div class="col-lg-2 col-md-2">
-						<div class="mb-3">
-							<label for="subscriptionStatus">Status </label>
-							<select class="form-select mb-3 " id="subscriptionStatus">
-								<option value="">Show All</option>
-								@foreach ($subscriptionStatus as $key => $item)
-								<option value="{{$key}}">{{$item}}</option>
-								@endforeach
-							</select>
+								<div class="col-lg-3">
+									
+									<div class="hstack -50 gap-1 mb-1">
+										<strong>Age</strong>: {{$member['age']}}
+									</div>
+									<div class="hstack -50 gap-1 mb-1">
+										<strong>Gender</strong>: {{$member['gender']}}
+									</div>
+									<div class="hstack -50 gap-1 mb-1">
+										<strong>Blood Group</strong>: {{$member['blood_group'] ?? '--'}}
+									</div>
+									<div class="hstack -50 gap-1 mb-1">
+										<strong>Weight</strong>: {{$member['weight'] ?? '--'}}
+									</div>
+									<div class="hstack -50 gap-1 mb-1">
+										<strong>Height</strong>: {{$member['height'] ?? '--'}}
+									</div>
+								</div>
+								
+								<div class="col-lg-5">
+									<div class="hstacka -50 gap-1 mb-1">
+										<strong>Education</strong>: {{$member['education'] ?? '--'}} {{$member['education_detail']}}
+									</div>
+									<div class="hstacka -50 gap-1 mb-1">
+										<strong>Occupation</strong>: {{$member['occupation'] ?? '--'}} {{$member['occupation_detail']}}
+									</div>
+									<div class="hstack -50 gap-1 mb-1">
+										<strong>Native Village </strong>: {{$member['native_village'] ?? '--'}}
+									</div>
+									<div class="hstacka -50 gap-1 mb-1">
+										<strong>Address  </strong>: {{$member['address']}}, {{$member['city']}}, {{$member['state']}} ,
+										{{$member['country']}}
+									</div>
+									 
+								</div>
+							</div>
 						</div>
 					</div>
 				</div>
-				<div class="row">
-					<table id="userSubscriptionDataTable" class="table nowrap align-middle" style="width:100%"
-						data-load="{{ route('user.subscriptions',['user'=>$user]) }}">
-						<thead>
-							<tr>
-								<th>Plan</th>
-								<th>Amount</th>
-								<th>Start At</th>
-								<th>Exprires At</th>
-								<th>Status</th>
-							</tr>
-						</thead>
-						<tbody>
-						</tbody>
-					</table>
-				</div>
 			</div>
 		</div>
-		<div class="card">
-			<div class="card-body border-bottom-dashed border-bottom">
-				<div class="row">
-					<div class="col-lg-12 col-sm-12">
-						<h6 class="card-title mb-0 flex-grow-1">User Wallet Transactions</h6>
-					</div>
-				</div>
-			</div>
-			<div class="card-body">
-				<div class="row justify-content-end">
-				</div>
-				<div class="row">
-					<table id="userWalletDataTable" class="table nowrap align-middle" style="width:100%" data-load="{{ route('user.wallet',['user'=>$user]) }}">
-						<thead>
-							<tr>
-								<th>Transaction Id</th>
-								<th>Payment Id</th>
-								<th>Amount</th>
-								<th>Type</th>
-								<th>Status</th>
-								<th>Description</th>
-								<th>Date</th>
-							</tr>
-						</thead>
-						<tbody>
-						</tbody>
-					</table>
-				</div>
-			</div>
-		</div>
-	</div>
+	@endforeach
 </div>
 
-@endsection
+@endsection 
 @section('script')
-@include('common.data-table-scripts')
-<script src="{{ asset('assets/js/users/user-view.js') }}"></script>
+<script src="{{ asset('assets/libs/bootstrap/js/bootstrap.min.js') }}"></script>
+<script src="{{ asset('assets/libs/bootstrap/js/bootstrap.bundle.min.js') }}"></script>
+<script type="text/javascript" src="{{ asset('assets/libs/flatpickr/flatpickr.min.js') }}"></script>
 @endsection

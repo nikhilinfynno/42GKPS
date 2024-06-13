@@ -55,7 +55,7 @@ class CommonHelper
         return $data;
     }
     
-    public static function getDateByUserTimezone($date, $timezone = null, $convertTimezone = false, $showTime = false){
+    public static function getDateByTimezone($date, $timezone = null, $convertTimezone = false, $showTime = false){
         $timezone = $timezone ?? config('constant.DEFAULT_TIMEZONE');
         // return $date->timezone($timezone)->format('Y-m-d H:i:s');
         if($convertTimezone){

@@ -17,6 +17,7 @@ use App\Models\UserRole;
 use App\Notifications\EmailNotification;
 use App\Services\FilterService;
 use App\Services\SearchService;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use Exception;
 use Illuminate\Http\Request;
@@ -65,9 +66,7 @@ class UserController extends Controller
             $data = $query->select('users.*')->orderBy('id', 'desc');
             return DataTables::of($data)
                 ->addIndexColumn()
-                ->editColumn('native_village', function ($data) {
-                    return $data->userDetail->nativeVillage->name;
-                })
+                
                 ->editColumn('gender', function ($data)use($genders) {
                     return $genders[$data->userDetail->gender];
                 })
@@ -79,7 +78,7 @@ class UserController extends Controller
                     data-bs-placement="top" 
                     data-bs-original-title="Edit Hof / Family"
                     ><i class="bx bx-edit"></i> </a>
-                    <a href="'. route('hof.show', ['user' => $user]).'" 
+                    <a href="'. route('hof.show', ['user' => $user->crypt_id]).'" 
                     class="btn btn-info btn-sm"
                     data-bs-toggle="tooltip" 
                     data-bs-placement="top" 
@@ -102,9 +101,9 @@ class UserController extends Controller
                 })
                 ->editColumn('created_at', function ($user) {
                     // return $user->created_at->format('Y-m-d H:i:s'); // Format as per your need
-                    return CommonHelper::getDateByUserTimezone($user, $user->created_at);
+                    return CommonHelper::getDateByTimezone($user->created_at);
                 })->addColumn('native_village', function ($user) {
-                    return optional($user->userDetail)->native_village_id;
+                    return optional($user->userDetail->nativeVillage)->name;
                 })->addColumn('gender', function ($user) {
                     return optional($user->userDetail)->gender;
                 })
@@ -225,7 +224,7 @@ class UserController extends Controller
                     data-bs-placement="top" 
                     data-bs-original-title="Edit Hof / Family"
                     ><i class="bx bx-edit"></i> </a>
-                    <a href="' . route('hof.show', ['user' => $user]) . '" 
+                    <a href="' . route('hof.show', ['user' => $user->crypt_id]) . '" 
                     class="btn btn-info btn-sm"
                     data-bs-toggle="tooltip" 
                     data-bs-placement="top" 
@@ -245,7 +244,7 @@ class UserController extends Controller
                 })
                 ->editColumn('created_at', function ($user) {
                     // return $user->created_at->format('Y-m-d H:i:s'); // Format as per your need
-                    return CommonHelper::getDateByUserTimezone($user, $user->created_at);
+                    return CommonHelper::getDateByTimezone($user->created_at);
                 })->addColumn('native_village', function ($user) {
                     return optional($user->userDetail)->native_village_id;
                 })->addColumn('gender', function ($user) {
@@ -388,11 +387,28 @@ class UserController extends Controller
     /**
      * Display the specified resource.
      */
-    public function show(Request $request, $user)
+    public function show(Request $request, $userId)
     {
-        $user = User::withTrashed()->findOrFail($user);
-         
-        return view('users.show',compact('user'));
+        $userId = decrypt($userId);
+        $user = User::withTrashed()->findOrFail($userId);
+        $searchService = resolve(SearchService::class);
+        $familyMembers =  $searchService->getMemberFamilyDetail($user->family_code);         
+        return view('users.show',compact('familyMembers'));
+    }
+    
+    /**
+     * Display the specified resource.
+     */
+    public function pdfDownload(Request $request, $userId)
+    {
+        $userId = decrypt($userId);
+        $user = User::withTrashed()->findOrFail($userId);
+        $searchService = resolve(SearchService::class);
+        $data =  $searchService->getMemberDetail($user->member_code);
+        // return view('users.pdf', compact('data'));
+        $pdf = Pdf::loadView('users.pdf', compact('data'))->setPaper('a4', 'portrait');
+        return $pdf->download($user->member_code.'.pdf');
+       
     }
 
     /**
